@@ -380,13 +380,13 @@ def enhance_crosswalk(
     show_summary: bool = typer.Option(True, "--summary/--no-summary", help="Show geographic data summary")
 ):
     """Enhance crosswalk with county geographic data (lat/lng, population, climate zones)."""
-    
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         console=console
     ) as progress:
-        
+
         # Load crosswalk
         task = progress.add_task("Loading crosswalk...", total=None)
         try:
@@ -395,7 +395,7 @@ def enhance_crosswalk(
         except Exception as e:
             console.print(f"❌ Failed to load crosswalk: {e}")
             raise typer.Exit(1)
-        
+
         # Load geographic data
         progress.update(task, description="Loading county geographic data...")
         try:
@@ -404,7 +404,7 @@ def enhance_crosswalk(
         except Exception as e:
             console.print(f"❌ Failed to load geographic data: {e}")
             raise typer.Exit(1)
-        
+
         # Save enhanced crosswalk
         progress.update(task, description="Saving enhanced crosswalk...")
         try:
@@ -413,32 +413,32 @@ def enhance_crosswalk(
         except Exception as e:
             console.print(f"❌ Failed to save enhanced crosswalk: {e}")
             raise typer.Exit(1)
-        
+
         progress.remove_task(task)
-    
+
     # Show summary if requested
     if show_summary:
         console.print("\n🌍 Geographic Data Summary:")
         summary = crosswalk.get_geographic_summary()
-        
+
         table = Table()
         table.add_column("Metric", style="cyan")
         table.add_column("Value", style="magenta")
         table.add_column("Coverage", style="green")
-        
+
         table.add_row("Total Counties", str(summary['total_counties']), "100%")
         table.add_row("With Coordinates", str(summary['counties_with_coordinates']), f"{summary['coordinate_coverage_pct']}%")
         table.add_row("With Population", str(summary['counties_with_population']), f"{summary['population_coverage_pct']}%")
         table.add_row("With Climate Zone", str(summary['counties_with_climate_zone']), f"{summary['climate_coverage_pct']}%")
         table.add_row("Climate Zones", str(summary['unique_climate_zones']), "-")
-        
+
         console.print(table)
-        
+
         if summary['climate_zones']:
             console.print(f"\n🌡️  Climate Zones: {', '.join(summary['climate_zones'][:10])}")
             if len(summary['climate_zones']) > 10:
                 console.print(f"   ... and {len(summary['climate_zones']) - 10} more")
-    
+
     console.print(f"✅ Enhanced crosswalk saved to {output_file}")
 
 
