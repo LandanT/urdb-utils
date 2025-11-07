@@ -212,7 +212,7 @@ class DataExporter:
                               crosswalk=None) -> Path:
         """
         Export county rates as GeoJSON with county point geometries.
-        
+
         Uses coordinate data from enhanced crosswalk if available,
         otherwise creates placeholder points.
 
@@ -231,12 +231,12 @@ class DataExporter:
             longitude, latitude = -100.0, 40.0  # Default placeholder
             population = None
             climate_zone = None
-            
+
             if crosswalk:
                 coords = crosswalk.get_county_coordinates(county_rate.county_fips)
                 if coords:
                     latitude, longitude = coords
-                
+
                 # Get additional geographic data
                 county_mappings = crosswalk.get_utilities_for_county(county_rate.county_fips)
                 if county_mappings:
@@ -263,7 +263,7 @@ class DataExporter:
                 'latitude': latitude,
                 'longitude': longitude
             }
-            
+
             # Add geographic data if available
             if population is not None:
                 properties['population'] = population
